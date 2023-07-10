@@ -12,6 +12,7 @@ services:
       - "${UPTIME_PORT}:3001"
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
       - ${DATA_DIR}:/app/data
     environment:
       TZ: "$TZ"
