@@ -1,0 +1,28 @@
+version: "3"
+networks:
+  test:
+    name: proxy1
+    driver: bridge
+
+services:
+  v2ray:
+    build:
+      context: ../services/v2ray
+      args:
+        CORE_VERSION: ${CORE_VERSION}
+        CONTAINER_PACKAGE_URL: ${CONTAINER_PACKAGE_URL}
+    container_name: ${PROJECT_NAME}_v2ray
+    ports:
+      - "${INBOUNDS_PORT}:8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${V2RAY_GEO_CONFIG}:/etc/v2ray/data/:rw
+      - ${V2RAY_LOG_DIR}:/var/log/v2ray/:rw
+      - ${V2RAY_CONFIG_FILE}:/etc/v2ray/config.json:rw
+    environment:
+      TZ: "$TZ"
+      V2RAY_GEO_CONFIG: "/etc/v2ray/data/"
+      V2RAY_CONFIG_LOCATION: "/etc/v2ray/config.json"
+    restart: always
+    networks:
+      - test

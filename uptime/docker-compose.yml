@@ -1,0 +1,20 @@
+version: "3"
+networks:
+  test:
+    name: uptime
+    driver: bridge
+
+services:
+  uptime:
+    image: louislam/uptime-kuma
+    container_name: uptime-kuma
+    ports:
+      - "${UPTIME_PORT}:3001"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA_DIR}:/app/data
+    environment:
+      TZ: "$TZ"
+    restart: always
+    networks:
+      - test

@@ -1,0 +1,85 @@
+version: "3"
+networks:
+  web:
+    name: web
+    driver: bridge
+
+services:
+  web-nginx:
+    build:
+      context: ../services/nginx
+      args:
+        NGINX_VERSION: ${NGINX_VERSION}
+        CONTAINER_PACKAGE_URL: ${CONTAINER_PACKAGE_URL}
+    container_name: ${PROJECT_NAME}_nginx
+    ports:
+      - "${NGINX_HTTP_HOST_PORT}:80"
+      - "${NGINX_HTTPS_HOST_PORT}:443"
+    volumes:
+      - ${SOURCE_DIR}:/www/html:rw
+      - ${TO_HTTPS_HTML_DIR}:/www/to_https_html:rw
+      - ${GAME_ADMIN_HTML_DIR}:/www/game_admin:rw
+      - ${GAME_API_DIR}:/www/admin_api:rw
+      - ${NGINX_CONFD_DIR}:/etc/nginx/conf.d/:rw
+      - ${NGINX_CONF_FILE}:/etc/nginx/nginx.conf:ro
+      - ${NGINX_SSL_CERTIFICATE_DIR}:/etc/nginx/cert/:rw
+      - ${NGINX_FASTCGI_PHP_CONF}:/etc/nginx/fastcgi-php.conf:ro
+      - ${NGINX_FASTCGI_PARAMS}:/etc/nginx/fastcgi_params:ro
+      - ${NGINX_LOG_DIR}:/var/log/nginx/:rw
+    environment:
+      TZ: "$TZ"
+    restart: always
+    networks:
+      - web
+  web-php8:
+    build:
+      context: ../services/php82
+      args:
+        PHP_VERSION: php:${PHP74_VERSION}-fpm-alpine
+        CONTAINER_PACKAGE_URL: ${CONTAINER_PACKAGE_URL}
+        PHP_COMPOSER_VERSION: ${PHP_COMPOSER_VERSION}
+        PHP_EXTENSIONS: ${PHP74_EXTENSIONS}
+        TZ: "$TZ"
+    container_name: ${PROJECT_NAME}_php82
+    volumes:
+      - ${GAME_API_DIR}:/www/admin_api:rw
+      - ${PHP82_PHP_CONF_FILE}:/usr/local/etc/php/php.ini:ro
+      - ${PHP82_FPM_CONF_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
+      - ${PHP82_LOG_DIR}:/var/log/php
+      - ${DATA_DIR}/composer:/tmp/composer
+    restart: always
+    extra_hosts:
+      - "not_use:host-gateway"
+    cap_add:
+      - SYS_PTRACE
+    depends_on:
+      - redis
+    networks:
+      - web
+  mariadb:
+    image: mariadb:${MYSQL_VERSION}
+    container_name: ${PROJECT_NAME}_mariadb
+    ports:
+      - "${MYSQL_HOST_PORT}:3306"
+    volumes:
+      - ${MYSQL_CONF_FILE}:/etc/mysql/conf.d/mysql.cnf:ro
+      - ${DATA_DIR}/mariadb:/var/lib/mysql/:rw
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_ROOT_HOST: "${MYSQL_ROOT_HOST}"
+      TZ: "$TZ"
+    networks:
+      - web
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: ${PROJECT_NAME}_redis
+    volumes:
+      - ${REDIS_CONF_FILE}:/etc/redis.conf:ro
+      - ${DATA_DIR}/redis:/data/:rw
+    restart: always
+    entrypoint: ["redis-server", "/etc/redis.conf"]
+    environment:
+      TZ: "$TZ"
+    networks:
+      - web
