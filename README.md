@@ -9,7 +9,11 @@
 │   ├── game_admin_html   // 管理后台静态页面
 │   ├── game_web_html     // 用户前台静态页面
 │   └── tohttps           // 跳转https
-├── proxy1
+├── proxy1                // 代理服务器系统
+    ├── config
+    ├── docker-compose.yml
+    ├── logs
+    ├── data
 ├── services              // docker 构建应用目录
 ├── shell
 │   ├── bbr.sh
