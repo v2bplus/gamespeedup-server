@@ -47,11 +47,13 @@ docker version
      "max-file": "3"
   },
   "registry-mirrors": [
+    "https://dockerproxy.com",
     "https://hub-mirror.c.163.com",
     "https://mirror.baidubce.com"
   ]
 }
 // 海外服务器不需要设置国内镜像
+
 
 ```
 
@@ -71,10 +73,17 @@ systemctl daemon-reload
 ```
 9. 优化宿主机网络
 链接参考 ([https://zhuanlan.zhihu.com/p/453788129](https://zhuanlan.zhihu.com/p/453788129))
+
 ```bash
 # wget --no-check-certificate https://github.com/teddysun/across/raw/master/bbr.sh && chmod +x bbr.sh && ./bbr.sh
 chmod +x ./shell/bbr.sh
 ./shell/bbr.sh
+
+# wget -O box.sh https://raw.githubusercontent.com/BlueSkyXN/SKY-BOX/main/box.sh && chmod +x box.sh && clear && ./box.sh
+chmod +x ./shell/box.sh
+./shell/box.sh
+
+```
 
 10. 生成ssh私钥 
 ```bash
