@@ -6,7 +6,7 @@ networks:
 
 services:
   uptime:
-    image: louislam/uptime-kuma
+    image: louislam/uptime-kuma:${UPTIME_VERSION}
     container_name: uptime-kuma
     ports:
       - "${UPTIME_PORT}:3001"

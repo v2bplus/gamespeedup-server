@@ -71,7 +71,6 @@ docker-compose logs
 
 ```bash
 cd /data/docker_compose/uptime
-docker-compose build
 docker-compose up -d
 docker-compose logs
 ```

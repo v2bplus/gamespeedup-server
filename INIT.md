@@ -37,14 +37,22 @@ docker version
 ```
 
 6. 设置国内镜像  
+   
    `/etc/docker/daemon.json` (没有就新建)
 ```json
 {
+  "log-driver": "json-file",
+  "log-opts": {
+     "max-size": "20m",
+     "max-file": "3"
+  },
   "registry-mirrors": [
     "https://hub-mirror.c.163.com",
     "https://mirror.baidubce.com"
   ]
 }
+// 海外服务器不需要设置国内镜像
+
 ```
 
 7. 检查
