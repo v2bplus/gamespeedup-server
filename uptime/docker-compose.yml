@@ -14,9 +14,11 @@ services:
       - "${NGINX_ADMIN_HOST_PORT}:81" # Admin web port
     environment:
       DISABLE_IPV6: "true"
+      DB_SQLITE_FILE: "/data/npm.sqlite"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${NPM_DATA_DIR}:/data
+      - ${STATUS_DATA_DIR}:/data/status
       - ${LETSENCRYPT_DATA_DIR}:/etc/letsencrypt
     restart: unless-stopped
     networks:
@@ -32,6 +34,18 @@ services:
       - ${DATA_DIR}:/app/data
     environment:
       TZ: "$TZ"
+    restart: unless-stopped
+    networks:
+      - test
+  sss:
+    image: cppla/serverstatus:${SERVERSTATUS_VERSION}
+    container_name: sss
+    ports:
+      - "${STATUS_PORT}:35601"
+      - "${STATUS_WEB_PORT}:80"
+    volumes:
+      - ${SSS_CONFIG_FILE}:/ServerStatus/server/config.json:rw
+      - ${SSS_JSON_FILE}:/usr/share/nginx/html/json
     restart: unless-stopped
     networks:
       - test
