@@ -8,7 +8,6 @@ services:
   npm:
     image: jc21/nginx-proxy-manager:${NGINXPROXY_VERSION}
     container_name: nginx-proxy-manager
-    restart: unless-stopped
     ports:
       - "${NGINX_HTTP_HOST_PORT}:80" #public http port
       - "${NGINX_HTTPS_HOST_PORT}:443" # public https port
@@ -17,6 +16,9 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${NPM_DATA_DIR}:/data
       - ${LETSENCRYPT_DATA_DIR}:/etc/letsencrypt
+    restart: unless-stopped
+    networks:
+      - test
   uptime:
     image: louislam/uptime-kuma:${UPTIME_VERSION}
     container_name: uptime-kuma
