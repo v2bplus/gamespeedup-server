@@ -14,7 +14,7 @@ services:
     container_name: ${PROJECT_NAME}_nginx
     ports:
       - "${NGINX_HTTP_HOST_PORT}:80"
-      - "${NGINX_HTTPS_HOST_PORT}:443"
+      # - "${NGINX_HTTPS_HOST_PORT}:443"
     volumes:
       - ${SOURCE_DIR}:/www/html:rw
       - ${TO_HTTPS_HTML_DIR}:/www/to_https_html:rw
