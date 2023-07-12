@@ -35,10 +35,10 @@ services:
     build:
       context: ../services/php82
       args:
-        PHP_VERSION: php:${PHP74_VERSION}-fpm-alpine
+        PHP_VERSION: php:${PHP82_VERSION}-fpm-alpine
         CONTAINER_PACKAGE_URL: ${CONTAINER_PACKAGE_URL}
         PHP_COMPOSER_VERSION: ${PHP_COMPOSER_VERSION}
-        PHP_EXTENSIONS: ${PHP74_EXTENSIONS}
+        PHP_EXTENSIONS: ${PHP82_EXTENSIONS}
         TZ: "$TZ"
     container_name: ${PROJECT_NAME}_php82
     volumes:
@@ -56,19 +56,23 @@ services:
       - redis
     networks:
       - web
-  mariadb:
-    image: mariadb:${MYSQL_VERSION}
-    container_name: ${PROJECT_NAME}_mariadb
+  mysql8:
+    image: mysql:${MYSQL8_VERSION}
+    container_name: ${PROJECT_NAME}_mysql8
     ports:
-      - "${MYSQL_HOST_PORT}:3306"
+      - "${MYSQL8_HOST_PORT}:3306"
     volumes:
-      - ${MYSQL_CONF_FILE}:/etc/mysql/conf.d/mysql.cnf:ro
-      - ${DATA_DIR}/mariadb:/var/lib/mysql/:rw
+      - ${MYSQL8_CONF_FILE}:/etc/mysql/conf.d/mysql.cnf:ro
+      - ${DATA_DIR}/mysql8/:/var/lib/mysql/:rw
     restart: always
+    networks:
+      - web
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_ROOT_HOST: "${MYSQL_ROOT_HOST}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL8_ROOT_PASSWORD}"
+      MYSQL_ROOT_HOST: "${MYSQL8_ROOT_HOST}"
       TZ: "$TZ"
+    depends_on:
+      - redis
     networks:
       - web
   redis:
