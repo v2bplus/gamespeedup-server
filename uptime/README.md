@@ -3,6 +3,7 @@
 ### 简介
 npm(nginx-proxy-manager) 轻量级nginx代理工具，可以代替宝塔，当做网关使用
 Uptime Kuma 一款简单易用的站点监控工具
+sss(ServerStatus) 云监控、多服务器云监控，
 
 #### 启动
 ```bash
